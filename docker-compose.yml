@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./overseas-api:/app
+    environment:
+      - RUST_LOG=debug
+      - DATABASE_URL=postgresql://app:password@postgres:5432/abroad_dev
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - BYOK_MASTER_KEY_B64=${BYOK_MASTER_KEY_B64}
+      - PAYMENT_WEBHOOK_SECRET=${PAYMENT_WEBHOOK_SECRET:-}
+      - TRUST_PROXY_HEADERS=${TRUST_PROXY_HEADERS:-false}
+      - ASYNC_WEBHOOK_PUBLIC_BASE_URL=${ASYNC_WEBHOOK_PUBLIC_BASE_URL:-}
+      - ASYNC_TASK_TTL_HOURS=${ASYNC_TASK_TTL_HOURS:-168}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: abroad-postgres
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: abroad_dev
+    ports:
+      - "55433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: abroad-redis
+    ports:
+      - "56380:6379"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:

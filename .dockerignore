@@ -1,0 +1,10 @@
+# Docker ignore
+target/
+.git/
+.github/
+*.md
+.env
+.env.local
+.DS_Store
+*.log
+coverage/

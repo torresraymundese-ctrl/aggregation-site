@@ -1,0 +1,29 @@
+# Rust
+target/
+target-budget/
+Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Env
+.env
+.env.local
+.env.production
+token.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+
+# Log
+*.log
+coverage/
+.codex-logs/
